@@ -114,6 +114,39 @@ const services = [
     active: true,
   },
   {
+    id: 'low-cut-fade',
+    name: 'Low Cut Fade',
+    description: 'A clean low cut with a sharp fade and crisp line-up — neat, low-maintenance and always fresh.',
+    duration: 35,
+    basePrice: 4000,
+    visitPrice: 4000,
+    homePrice: 4000,
+    category: 'Hair',
+    active: true,
+  },
+  {
+    id: 'leopard-dye',
+    name: 'Leopard Print Dye',
+    description: 'Bold leopard-spot pattern dyed into the hair — a statement colour job with pink and black detailing.',
+    duration: 90,
+    basePrice: 15000,
+    visitPrice: 15000,
+    homePrice: 15000,
+    category: 'Hair',
+    active: true,
+  },
+  {
+    id: 'tinted-afro',
+    name: 'Tinted Afro',
+    description: 'A full afro coloured with a vibrant tint — rounded, defined and finished with a bold colour.',
+    duration: 90,
+    basePrice: 15000,
+    visitPrice: 15000,
+    homePrice: 15000,
+    category: 'Hair',
+    active: true,
+  },
+  {
     // Fallback for unique style names not in the gallery. The client types the
     // name and we book it at a standard cut price.
     id: 'custom',
@@ -200,7 +233,7 @@ const addOns = [
     id: 'dye-tint',
     name: 'Dye / Tint',
     description: 'Add colour or tint to your style.',
-    price: 2000,
+    price: 15000,
     active: true,
   },
 ];
