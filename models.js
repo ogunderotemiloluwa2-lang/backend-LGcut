@@ -198,7 +198,7 @@ const serviceZones = [
     state: 'Ogun State',
     aliases: ['funaab', 'alabata', 'federal university of agriculture', 'osiele'],
     maxDistance: 15,
-    travelFee: 2000,
+    travelFee: 0,
     travelTimeMinutes: 20,
     active: true,
   },
@@ -209,7 +209,7 @@ const serviceZones = [
     state: 'Ogun State',
     aliases: ['abeokuta', 'kuto', 'ibara', 'oke-ilewo', 'panseke', 'sapon'],
     maxDistance: 20,
-    travelFee: 3000,
+    travelFee: 0,
     travelTimeMinutes: 30,
     active: true,
   },
@@ -220,7 +220,7 @@ const serviceZones = [
     state: 'Ogun State',
     aliases: ['sagamu', 'shagamu', 'ogijo'],
     maxDistance: 25,
-    travelFee: 4000,
+    travelFee: 0,
     travelTimeMinutes: 50,
     active: true,
   },
@@ -228,11 +228,19 @@ const serviceZones = [
 
 // ===== ADD-ONS =====
 // Optional extras the customer can add to any service.
+// The customer picks EITHER a dye OR a tint — they are separate options.
 const addOns = [
   {
-    id: 'dye-tint',
-    name: 'Dye / Tint',
-    description: 'Add colour or tint to your style.',
+    id: 'dye',
+    name: 'Dye',
+    description: 'Add colour to your style.',
+    price: 2000,
+    active: true,
+  },
+  {
+    id: 'tint',
+    name: 'Tint',
+    description: 'Add a tint to your style.',
     price: 15000,
     active: true,
   },

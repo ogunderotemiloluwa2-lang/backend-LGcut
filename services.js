@@ -99,12 +99,8 @@ const calculatePrice = ({ serviceId, appointmentType, locationId, serviceZoneId,
     }
   }
 
-  if (appointmentType === 'home' && serviceZoneId) {
-    const zone = findById(serviceZones, serviceZoneId);
-    if (zone) {
-      travelFee = zone.travelFee;
-    }
-  }
+  // Transport/travel fare is not charged yet — the company has not approved it.
+  // The zone is still used for ETA only.
 
   // Add-ons (e.g. dye / tint) — priced from the server catalogue, never the client.
   const selectedAddOns = (Array.isArray(addOnIds) ? addOnIds : [])
@@ -260,7 +256,8 @@ const calculateAvailability = ({ serviceId, appointmentType, date, locationId, s
     if (!zone) {
       return { available: false, slots: [], message: 'Service zone not found' };
     }
-    travelFee = zone.travelFee;
+    // Transport/travel fare is not charged yet — the company has not approved it.
+    travelFee = 0;
     travelTimeMinutes = zone.travelTimeMinutes || businessConfig.travelBuffer;
     totalDuration = serviceDuration + travelTimeMinutes;
   }
