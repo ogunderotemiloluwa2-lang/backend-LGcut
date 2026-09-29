@@ -12,7 +12,7 @@ services:
       - key: ADMIN_TOKEN
         value: "24434"
       - key: FORMSPREE_ENDPOINT
-        value: "https://formspree.io/f/xdekoqbb"
+        value: "https://formspree.io/f/xkjgyqnb"
       # Set these in the Render dashboard (do NOT commit secrets):
       - key: FRONTEND_URL
         sync: false

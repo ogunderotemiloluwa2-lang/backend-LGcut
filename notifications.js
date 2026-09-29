@@ -7,7 +7,7 @@
 // succeeds and the other channel is still attempted.
 
 const FORMSPREE_ENDPOINT =
-  process.env.FORMSPREE_ENDPOINT || 'https://formspree.io/f/xdekoqbb';
+  process.env.FORMSPREE_ENDPOINT || 'https://formspree.io/f/xkjgyqnb';
 
 // Read Telegram config lazily (at call time) so it always reflects the latest
 // environment — this avoids the module-load-order trap where dotenv has not
