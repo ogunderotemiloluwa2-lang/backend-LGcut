@@ -1,11 +1,11 @@
 const express = require('express');
 const { requireAdmin } = require('./adminAuth');
-const { readDatabase, updateDatabase } = require('./dataStore');
+const { readDatabase } = require('./dataStore');
 const {
   SLOT_STATUSES,
   BOOKING_STATUSES,
-  createSlot,
-  updateSlot,
+  isSlotPast,
+  setSlotStatus,
   updateBooking,
   archiveBooking,
   deleteBooking,
@@ -32,30 +32,28 @@ router.get('/availability', async (req, res) => {
       if (!SLOT_STATUSES.has(req.query.status)) return res.status(400).json({ success: false, message: 'Invalid availability status' });
       slots = slots.filter((slot) => slot.status === req.query.status);
     }
-    res.json({ success: true, data: slots });
+    // `past` tells the admin UI to lock the row — a time that has gone by can
+    // no longer be opened or closed.
+    const now = new Date();
+    res.json({ success: true, data: slots.map((slot) => ({ ...slot, past: isSlotPast(slot, now) })) });
   } catch (error) { handleError(res, error); }
 });
 
-router.post('/availability', async (req, res) => {
-  try { res.status(201).json({ success: true, data: await createSlot(req.body) }); }
-  catch (error) { handleError(res, error); }
+// Adding and removing time slots is intentionally disabled. The admin only
+// opens or closes the times that already exist.
+router.post('/availability', (req, res) => {
+  res.status(405).json({ success: false, message: 'Time slots are fixed. Use Open or Close instead.' });
 });
 
 router.patch('/availability/:slotId', async (req, res) => {
-  try { res.json({ success: true, data: await updateSlot(req.params.slotId, req.body) }); }
-  catch (error) { handleError(res, error); }
+  try {
+    const { status } = req.body || {};
+    res.json({ success: true, data: await setSlotStatus(req.params.slotId, status) });
+  } catch (error) { handleError(res, error); }
 });
 
-router.delete('/availability/:slotId', async (req, res) => {
-  try {
-    await updateDatabase((database) => {
-      const slot = database.availability.find((item) => item.id === req.params.slotId);
-      if (!slot) throw Object.assign(new Error('Availability slot not found'), { code: 'NOT_FOUND' });
-      if (slot.status === 'booked') throw Object.assign(new Error('Booked slots cannot be deleted'), { code: 'CONFLICT' });
-      database.availability = database.availability.filter((item) => item.id !== req.params.slotId);
-    });
-    res.json({ success: true, message: 'Availability slot deleted' });
-  } catch (error) { handleError(res, error); }
+router.delete('/availability/:slotId', (req, res) => {
+  res.status(405).json({ success: false, message: 'Time slots cannot be removed. Use Open or Close instead.' });
 });
 
 router.get('/bookings', async (req, res) => {

@@ -82,6 +82,35 @@ function publicSlot(slot) {
   };
 }
 
+// A slot is "past" once its start time has gone by. Past slots are locked:
+// the admin can no longer open or close them. Compared in UTC to match the
+// rest of the booking rules (getTodayDate uses UTC).
+function isSlotPast(slot, now = new Date()) {
+  const start = new Date(`${slot.date}T${slot.startTime}:00Z`);
+  return !Number.isNaN(start.getTime()) && start.getTime() <= now.getTime();
+}
+
+// The ONLY way the admin changes availability: mark a time unavailable
+// (closed) or available (open) again. There is no add or remove.
+// Booked and past slots are locked.
+async function setSlotStatus(slotId, status) {
+  if (!['available', 'unavailable'].includes(status)) {
+    throw Object.assign(new Error('Status must be available or unavailable'), { code: 'VALIDATION_ERROR' });
+  }
+  return updateDatabase((database) => {
+    const slot = database.availability.find((item) => item.id === slotId);
+    if (!slot) throw Object.assign(new Error('Availability slot not found'), { code: 'NOT_FOUND' });
+    if (slot.status === 'booked') {
+      throw Object.assign(new Error('This time is booked — cancel the appointment first'), { code: 'CONFLICT' });
+    }
+    if (isSlotPast(slot)) {
+      throw Object.assign(new Error('This time has already passed'), { code: 'CONFLICT' });
+    }
+    slot.status = status;
+    return slot;
+  });
+}
+
 async function getAvailableSlots(date) {
   const database = await readDatabase();
   return database.availability.filter((slot) => slot.date === date && slot.status === 'available').map(publicSlot);
@@ -268,6 +297,8 @@ module.exports = {
   validateSlotInput,
   validateCustomerInput,
   validateSlotShape,
+  isSlotPast,
+  setSlotStatus,
   getAvailableSlots,
   createSlot,
   updateSlot,
